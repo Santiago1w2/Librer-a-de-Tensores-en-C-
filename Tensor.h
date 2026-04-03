@@ -22,6 +22,13 @@ public:
     static Tensor random(const vector<size_t>& shape, const double& min,const double& max);
     static Tensor arange(const int& start, const int& end);
 
+    // Prototipos requeridos en la clase Tensor
+    Tensor(const Tensor& other);
+    Tensor& operator=(const Tensor& other);
+    Tensor(Tensor&& other) noexcept;
+    Tensor& operator=(Tensor&& other) noexcept;
+    ~Tensor();
+
 };
 
 
