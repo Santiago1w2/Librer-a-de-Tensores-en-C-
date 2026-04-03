@@ -81,35 +81,6 @@ Tensor::~Tensor() {
     delete[] matriz;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //Metodos estaticos para facilitar la creación de Tensores
 Tensor Tensor::zeros(const vector<size_t>& shape) {
     size_t total_values = 1;
