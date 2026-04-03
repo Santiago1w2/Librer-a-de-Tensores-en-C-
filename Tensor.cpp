@@ -62,6 +62,20 @@ Tensor::Tensor(Tensor&& other) noexcept {
     other.shape.clear();
 }
 
+//Sobrecarga =, movimeinto
+
+Tensor& Tensor::operator=(Tensor&& other) noexcept {
+    //Evitar copiar lo mismo
+    if (this == &other) {
+        return *this;
+    }
+    delete [] matriz;
+    this->shape = move(other.shape);
+    this->matriz = other.matriz;
+    other.matriz = nullptr;
+    other.shape.clear();
+    return *this;
+}
 
 
 
