@@ -33,7 +33,7 @@ Tensor::Tensor(const Tensor& other) {
     }
 }
 
-// Sobre caraga de =
+// Sobre caraga de =, copia
 Tensor& Tensor::operator=(const Tensor& other) {
     //Evitar copiar lo mismo
     if (this == &other) {
@@ -52,6 +52,15 @@ Tensor& Tensor::operator=(const Tensor& other) {
     return *this;
 }
 
+//Constructor de movimiento
+Tensor::Tensor(Tensor&& other) noexcept {
+    // Se usa move para transferir los datos del vector sin copiarlos,
+    // evitando una copia innecesaria y mejorando el rendimiento
+    this->shape = move(other.shape);
+    this->matriz = other.matriz;
+    other.matriz = nullptr;
+    other.shape.clear();
+}
 
 
 

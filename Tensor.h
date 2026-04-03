@@ -23,6 +23,7 @@ public:
     static Tensor arange(const int& start, const int& end);
     Tensor(const Tensor& other);
     Tensor& operator=(const Tensor& other);
+    Tensor(Tensor&& other) noexcept;
 };
 
 
