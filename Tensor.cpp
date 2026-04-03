@@ -76,7 +76,10 @@ Tensor& Tensor::operator=(Tensor&& other) noexcept {
     other.shape.clear();
     return *this;
 }
-
+//Destrcutor
+Tensor::~Tensor() {
+    delete[] matriz;
+}
 
 
 

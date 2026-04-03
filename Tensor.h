@@ -24,7 +24,9 @@ public:
     Tensor(const Tensor& other);
     Tensor& operator=(const Tensor& other);
     Tensor(Tensor&& other) noexcept;
-    Tensor& operator=(Tensor&& other) noexcept
+    Tensor& operator=(Tensor&& other) noexcept;
+    ~Tensor();
+
 };
 
 
