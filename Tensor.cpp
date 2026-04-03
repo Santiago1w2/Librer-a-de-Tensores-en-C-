@@ -33,7 +33,24 @@ Tensor::Tensor(const Tensor& other) {
     }
 }
 
-
+// Sobre caraga de =
+Tensor& Tensor::operator=(const Tensor& other) {
+    //Evitar copiar lo mismo
+    if (this == &other) {
+        return *this;
+    }
+    delete [] matriz;
+    this->shape = other.shape;
+    size_t total = 1;
+    for (size_t m : other.shape) {
+        total *= m;
+    }
+    this->matriz = new double [total];
+    for (int i = 0; i < total; i++) {
+        matriz[i] = other.matriz[i];
+    }
+    return *this;
+}
 
 
 
