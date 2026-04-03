@@ -8,8 +8,8 @@ Tensor::Tensor(const vector<size_t>& shape, const vector<double>& values) {
         throw invalid_argument("El tamaño maximo de dimnesiones tiene que ser 3");
     // Calcular tamaño total
     size_t total = 1;
-    for (size_t s : shape) {
-        total *= s;
+    for (size_t m : shape) {
+        total *= m;
     }
     if (values.size() != total) {
         throw invalid_argument("El tamanio de values no coincide con los requeridos por la dimension ingresada");
@@ -20,19 +20,66 @@ Tensor::Tensor(const vector<size_t>& shape, const vector<double>& values) {
         matriz[i] = values[i];
     }
 }
+// Prototipos requeridos en la clase Tensor
+//Constructor de copia
+Tensor::Tensor(const Tensor& other) {
+    this -> shape = other.shape;
+    size_t total = 1;
+    for (size_t m : other.shape) {
+        total *= m;
+    }
+    for (int i = 0; i < total; i++) {
+        matriz[i] = other.matriz[i];
+    }
+}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Metodos estaticos para facilitar la creación de Tensores
 Tensor Tensor::zeros(const vector<size_t>& shape) {
     size_t total_values = 1;
-    for (size_t s : shape) {
-        total_values *= s;
+    for (size_t m : shape) {
+        total_values *= m;
     }
     vector<double> values (total_values,0.0);
     return Tensor(shape,values);
 }
 Tensor Tensor::ones(const vector<size_t>& shape) {
     size_t total_values = 1;
-    for (size_t s : shape) {
-        total_values *= s;
+    for (size_t m : shape) {
+        total_values *= m;
     }
     vector<double> values (total_values,1.0);
     return Tensor(shape,values);
@@ -40,8 +87,8 @@ Tensor Tensor::ones(const vector<size_t>& shape) {
 Tensor Tensor::random(const vector<size_t>& shape, const double& min,const double& max){
     vector<double> values;
     size_t total_values = 1;
-    for (size_t s : shape) {
-        total_values *= s;
+    for (size_t m : shape) {
+        total_values *= m;
     }
     for (int i = 0; i < total_values; i++) {
         double r = min + (double)rand() / RAND_MAX * (max - min);

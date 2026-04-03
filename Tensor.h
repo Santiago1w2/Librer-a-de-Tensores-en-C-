@@ -21,7 +21,8 @@ public:
     static Tensor ones(const vector<size_t>& shape);
     static Tensor random(const vector<size_t>& shape, const double& min,const double& max);
     static Tensor arange(const int& start, const int& end);
-
+    Tensor(const Tensor& other);
+    Tensor& operator=(const Tensor& other);
 };
 
 
