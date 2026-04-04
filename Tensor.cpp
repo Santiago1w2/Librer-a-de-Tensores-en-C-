@@ -159,3 +159,43 @@ Tensor Sigmoid::apply(const Tensor& t) const {
     }
     return result;
 }
+
+
+//Sobrecarga de operadores
+Tensor Tensor::operator+(const Tensor& other) const {
+    if (shape != other.shape) {
+        throw invalid_argument("El shape no es incompatible entre ambos tensores");
+    }
+    Tensor m = *this;
+    for (size_t i = 0; i < m.size(); i++) {
+        m[i] += other[i];
+    }
+    return m;
+}
+Tensor Tensor::operator-(const Tensor& other) const {
+    if (shape != other.shape) {
+        throw invalid_argument("El shape no es incompatible entre ambos tensores");
+    }
+    Tensor m = *this;
+    for (size_t i = 0; i < m.size(); i++) {
+        m[i] -= other[i];
+    }
+    return m;
+}
+Tensor Tensor::operator*(const Tensor& other) const {
+    if (shape != other.shape) {
+        throw invalid_argument("El shape no es incompatible entre ambos tensores");
+    }
+    Tensor m = *this;
+    for (size_t i = 0; i < m.size(); i++) {
+        m[i] *= other[i];
+    }
+    return m;
+}
+Tensor Tensor::operator*(double num) const{
+    Tensor m = *this;
+    for (size_t i = 0; i < m.size(); i++) {
+        m[i] *= num;
+    }
+    return m;
+}

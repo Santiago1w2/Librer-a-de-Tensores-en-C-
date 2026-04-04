@@ -40,7 +40,10 @@ public:
     Tensor apply(const TensorTransform& transform) const;
 
     //Sobre carga de operadores
-
+    Tensor operator+(const Tensor& other) const;
+    Tensor operator-(const Tensor& other) const;
+    Tensor operator*(const Tensor& other) const;
+    Tensor operator*(double scalar) const;
 
 };
 
