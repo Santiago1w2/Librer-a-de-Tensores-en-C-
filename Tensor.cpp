@@ -3,6 +3,8 @@
 //
 
 #include "Tensor.h"
+Tensor::Tensor(double* data, const vector<size_t>& shape)
+    : matriz(data), shape(shape), eliminar(false) {}
 Tensor::Tensor(const vector<size_t>& shape, const vector<double>& values) {
     if (shape.size() > 3)
         throw invalid_argument("El tamaño maximo de dimnesiones tiene que ser 3");
@@ -22,7 +24,7 @@ Tensor::Tensor(const vector<size_t>& shape, const vector<double>& values) {
 }
 
 //Sobre carga requerida pra trabajar con las clases heredadas
-size_t Tensor::size() {
+size_t Tensor::size() const {
     size_t total = 1;
     for (size_t m : this->shape) {
         total *= m;
@@ -45,6 +47,7 @@ const double& Tensor::operator[](size_t i) const {
 Tensor::Tensor(const Tensor& other) {
     this -> shape = other.shape;
     size_t total = 1;
+    matriz = new double[total];
     for (size_t m : other.shape) {
         total *= m;
     }
@@ -98,7 +101,8 @@ Tensor& Tensor::operator=(Tensor&& other) noexcept {
 }
 //Destrcutor
 Tensor::~Tensor() {
-    delete[] matriz;
+    if (eliminar)
+        delete[] matriz;
 }
 
 //Metodos estaticos para facilitar la creación de Tensores
@@ -184,7 +188,7 @@ Tensor Tensor::operator-(const Tensor& other) const {
 }
 Tensor Tensor::operator*(const Tensor& other) const {
     if (shape != other.shape) {
-        throw invalid_argument("El shape no es incompatible entre ambos tensores");
+        throw invalid_argument("El shape es incompatible entre ambos tensores");
     }
     Tensor m = *this;
     for (size_t i = 0; i < m.size(); i++) {
@@ -198,4 +202,21 @@ Tensor Tensor::operator*(double num) const{
         m[i] *= num;
     }
     return m;
+}
+
+
+Tensor Tensor::view(const vector<size_t>& new_shape) const {
+    if (shape.size() > 3)
+        throw invalid_argument("El tamaño maximo de dimnesiones tiene que ser 3");
+
+    size_t total_values = 1;
+    for (size_t m : new_shape) {
+        total_values *= m;
+    }
+    if (size() != total_values) {
+        throw invalid_argument("El shape es incompatible entre ambos tensores");
+    }
+    Tensor result(matriz, new_shape);
+
+    return result;
 }

@@ -13,19 +13,20 @@ using namespace std;
 
 class TensorTransform;
 class Tensor {
-
+    bool eliminar = true;
     double* matriz;
     vector <size_t> shape;
 public:
 
     //size_t es un tipo de dato que se ua para tamaños o indices o posiciones de memoria
     //Solo toma valores positovs y cero.
+    Tensor(double* data, const vector<size_t>& shape);
     Tensor(const vector<size_t>& shape, const vector<double>& values);
     static Tensor zeros(const vector<size_t>& shape);
     static Tensor ones(const vector<size_t>& shape);
     static Tensor random(const vector<size_t>& shape, const double& min,const double& max);
     static Tensor arange(const int& start, const int& end);
-    size_t size();
+    size_t size() const;
     double& operator[](size_t i);
     const double& operator[](size_t i) const;
 
@@ -44,6 +45,8 @@ public:
     Tensor operator-(const Tensor& other) const;
     Tensor operator*(const Tensor& other) const;
     Tensor operator*(double scalar) const;
+
+    Tensor view(const vector<size_t>& new_shape) const;
 
 };
 
