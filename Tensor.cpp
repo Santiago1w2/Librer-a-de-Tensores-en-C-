@@ -20,6 +20,26 @@ Tensor::Tensor(const vector<size_t>& shape, const vector<double>& values) {
         matriz[i] = values[i];
     }
 }
+
+//Sobre carga requerida pra trabajar con las clases heredadas
+size_t Tensor::size() {
+    size_t total = 1;
+    for (size_t m : this->shape) {
+        total *= m;
+    }
+    return total;
+}
+double& Tensor::operator[](size_t i) {
+    return matriz[i];
+}
+
+const double& Tensor::operator[](size_t i) const {
+    return matriz[i];
+}
+
+
+
+
 // Prototipos requeridos en la clase Tensor
 //Constructor de copia
 Tensor::Tensor(const Tensor& other) {
@@ -119,4 +139,23 @@ Tensor Tensor::arange(const int& start, const int& end) {
     }
     vector<size_t> shape = {total_values};
     return Tensor(shape,values);
+}
+
+
+
+//Clase heradada ReLU
+Tensor ReLU::apply(const Tensor& t) const {
+    Tensor res = t;
+    for (int i = 0; i<res.size();i++) {
+        res[i]=max(0.0, res[i]);
+    }
+}
+
+//Clase heradada Sigmoid
+Tensor Sigmoid::apply(const Tensor& t) const {
+    Tensor result = t;
+    for (size_t i = 0; i < result.size(); i++) {
+        result[i] = 1.0 / (1.0 + exp(-result[i]));
+    }
+    return result;
 }
