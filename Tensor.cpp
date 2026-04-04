@@ -3,6 +3,8 @@
 //
 
 #include "Tensor.h"
+using namespace std;
+
 Tensor::Tensor(const vector<size_t>& shape, const vector<double>& values) {
     if (shape.size() > 3)
         throw invalid_argument("El tamaño maximo de dimnesiones tiene que ser 3");
