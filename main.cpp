@@ -18,12 +18,18 @@ int main() {
 
    */
 
-   Tensor A = Tensor :: ones ({2 , 3}) ;
+
+   Tensor A = Tensor :: ones ({2 , 2}) ;
    cout << "Tensor A creado" << endl ;
-   Tensor B = Tensor :: zeros ({2 , 3}) ;
+   Tensor B = Tensor :: zeros ({2 , 2}) ;
    cout << "Tensor B creado" << endl ;
    Tensor C = Tensor :: concat ({ A , B } , 0) ;
    cout << "Tensor C concatenado" << endl ;
 
+
+Tensor D = dot(A, B);
+   cout << "Tensor D multiplicado" << endl ;
+   Tensor E = matmul(A, B);
+   cout << "Tensor E multiplicado" << endl ;
 
 }

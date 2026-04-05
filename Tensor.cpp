@@ -322,11 +322,46 @@ Tensor Tensor::concat(const std::vector<Tensor>& tensors, int axis) {
 //FUNCIONES AMIGAS
 
 Tensor dot ( const Tensor & a , const Tensor & b ) {
-
+    if (a.shape != b.shape) {
+        throw std::invalid_argument("Dot product: Los tensores deben tener el mismo shape.");
+    }
+    double suma = 0.0;
+    size_t n = a.size();
+    // Acceso directo a la memoria interna (posible por ser friend)
+    for (size_t i = 0; i < n; ++i) {
+        suma += a.matriz[i] * b.matriz[i];
+    }
+    // Devolvemos un tensor de un solo elemento
+    return Tensor({1}, {suma});
 }
 
 Tensor matmul ( const Tensor & a , const Tensor & b ) {
-
+    // 1. Validar que sean bidimensionales
+    if (a.shape.size() != 2 || b.shape.size() != 2) {
+        throw std::invalid_argument("Matmul: Ambos tensores deben ser 2D.");
+    }
+    // 2. Validar compatibilidad (Columnas de A == Filas de B)
+    size_t m = a.shape[0];
+    size_t n = a.shape[1];
+    size_t p = b.shape[1];
+    if (n != b.shape[0]) {
+        throw std::invalid_argument("Matmul: Dimensiones incompatibles para multiplicacion.");
+    }
+    // 3. Crear tensor resultado (inicializado en ceros)
+    Tensor res = Tensor::zeros({m, p});
+    // 4. Multiplicación (Algoritmo i, j, k)
+    for (size_t i = 0; i < m; ++i) {
+        for (size_t j = 0; j < p; ++j) {
+            double temp = 0.0;
+            for (size_t k = 0; k < n; ++k) {
+                // Acceso manual al índice: fila * total_columnas + columna
+                temp += a.matriz[i * n + k] * b.matriz[k * p + j];
+            }
+            res.matriz[i * p + j] = temp;
+        }
+    }
+    // 5. Devolver por valor (C++ activará el Constructor de Movimiento automáticamente)
+    return res;
 }
 
 
