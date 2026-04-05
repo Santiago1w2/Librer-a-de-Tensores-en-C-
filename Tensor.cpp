@@ -3,6 +3,7 @@
 //
 
 #include "Tensor.h"
+using namespace std;
 Tensor::Tensor(double* data, const vector<size_t>& shape)
     : matriz(data), shape(shape), eliminar(false) {}
 Tensor::Tensor(const vector<size_t>& shape, const vector<double>& values) {
@@ -145,6 +146,9 @@ Tensor Tensor::arange(const int& start, const int& end) {
     return Tensor(shape,values);
 }
 
+Tensor Tensor::apply(const TensorTransform& transform) const {
+    return transform.apply(*this);
+}
 
 
 //Clase heradada ReLU
@@ -153,6 +157,9 @@ Tensor ReLU::apply(const Tensor& t) const {
     for (int i = 0; i<res.size();i++) {
         res[i]=max(0.0, res[i]);
     }
+    //cout << "RELU APLICADO EXITOSAMENTE";
+    return res;
+
 }
 
 //Clase heradada Sigmoid
