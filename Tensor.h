@@ -2,6 +2,7 @@
 // Created by smora on 3/04/2026.
 //
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <algorithm>
 #include <cmath>
@@ -22,6 +23,8 @@ public:
     //Solo toma valores positovs y cero.
     Tensor(double* data, const vector<size_t>& shape);
     Tensor(const vector<size_t>& shape, const vector<double>& values);
+    //constructor de copia
+    //
     static Tensor zeros(const vector<size_t>& shape);
     static Tensor ones(const vector<size_t>& shape);
     static Tensor random(const vector<size_t>& shape, const double& min,const double& max);
@@ -47,6 +50,8 @@ public:
     Tensor operator*(double scalar) const;
 
     Tensor view(const vector<size_t>& new_shape) const;
+
+    //void display(); NO FUNCIONA
 
 };
 
