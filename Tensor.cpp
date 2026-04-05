@@ -248,6 +248,88 @@ Tensor Tensor::view(const vector<size_t>& new_shape) const {
 
     return result;
 }
+//concatenacion
+
+Tensor Tensor::concat(const std::vector<Tensor>& tensors, int axis) {
+    //throw bota error aparentemente
+    //hubiera puesto return pero no se si retornar un tensor vacio sea lo ideal
+
+    if (tensors.empty()) {
+        throw invalid_argument("Concat: La lista de tensores está vacía.");
+    }
+    // Validar dimensiones base y preparar el nuevo shape
+    vector<size_t> first_shape = tensors[0].shape;
+    size_t dims = first_shape.size();
+
+    if (axis < 0) axis += dims;
+    if (axis < 0 || axis >= dims) {
+
+        throw out_of_range("Concat: Eje (axis) fuera de rango.");
+    }
+    vector<size_t> new_shape = first_shape;
+    size_t total_concat_dim = 0;
+
+    for (const auto& t : tensors) {
+        if (t.shape.size() != dims) {
+            throw invalid_argument("Concat: Todos los tensores deben tener el mismo número de dimensiones.");
+        }
+        for (size_t i = 0; i < dims; ++i) {
+            if (i != (size_t)axis && t.shape[i] != first_shape[i]) {
+                throw invalid_argument("Concat: Dimensiones incompatibles en ejes distintos al de concatenación.");
+            }
+        }
+        total_concat_dim += t.shape[axis];
+    }
+    new_shape[axis] = total_concat_dim;
+
+    //Reservar memoria para el nuevo tensor
+    Tensor result = zeros(new_shape);
+    // Suponiendo que zeros reserva memoria y pone eliminar = true
+
+    //Copia controlada de datos
+    /* Lógica: Dividimos el tensor en tres partes:
+       - 'outer': bloques antes del eje de concatenación.
+       - 'axis': el eje que estamos uniendo.
+       - 'inner': bloques después del eje (los datos contiguos).
+    */
+    size_t outer_size = 1;
+    for (int i = 0; i < axis; ++i) outer_size *= new_shape[i];
+
+    size_t inner_size = 1;
+    for (size_t i = axis + 1; i < dims; ++i) inner_size *= new_shape[i];
+
+    size_t current_axis_offset = 0;
+    for (const auto& t : tensors) {
+        size_t t_axis_dim = t.shape[axis];
+
+        for (size_t o = 0; o < outer_size; ++o) {
+            // Calculamos el origen en el tensor pequeño y el destino en el grande
+            double* dest = &result.matriz[(o * total_concat_dim + current_axis_offset) * inner_size];
+            const double* src = &t.matriz[o * t_axis_dim * inner_size];
+
+            // Copiamos el bloque contiguo de memoria
+            std::copy(src, src + (t_axis_dim * inner_size), dest);
+        }
+        current_axis_offset += t_axis_dim;
+    }
+
+    //Devolver usando move (C++ lo hace automático al retornar un objeto local)
+    return result;
+}
+
+
+
+//FUNCIONES AMIGAS
+
+Tensor dot ( const Tensor & a , const Tensor & b ) {
+
+}
+
+Tensor matmul ( const Tensor & a , const Tensor & b ) {
+
+}
+
+
 
 /*
 //Metodo display para mostrar matrices y probarlas

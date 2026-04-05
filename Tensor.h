@@ -53,6 +53,13 @@ public:
 
     //void display(); NO FUNCIONA
 
+    //concatenacion
+
+    static Tensor concat(const std::vector<Tensor>& tensors, int axis);
+
+    //Funciones Amigas
+    friend Tensor dot ( const Tensor & a , const Tensor & b ) ;
+    friend Tensor matmul ( const Tensor & a , const Tensor & b );
 };
 
 //Clase abstracta

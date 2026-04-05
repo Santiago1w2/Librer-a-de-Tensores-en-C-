@@ -2,7 +2,7 @@
 #include "Tensor.h"
 using namespace std;
 int main() {
-   Tensor A = Tensor::arange(-5, 5).view({2, 5});
+   /* Tensor A = Tensor::arange(-5, 5).view({2, 5});
    //A.display();
    ReLU relu;
    Tensor B = A.apply(relu);
@@ -15,4 +15,15 @@ int main() {
    Tensor E = A * B ;
    Tensor F = A * 2.0;
    cout << "Operaciones hechas exitosamente" << endl;
+
+   */
+
+   Tensor A = Tensor :: ones ({2 , 3}) ;
+   cout << "Tensor A creado" << endl ;
+   Tensor B = Tensor :: zeros ({2 , 3}) ;
+   cout << "Tensor B creado" << endl ;
+   Tensor C = Tensor :: concat ({ A , B } , 0) ;
+   cout << "Tensor C concatenado" << endl ;
+
+
 }
