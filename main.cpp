@@ -18,7 +18,7 @@ int main() {
 
    */
 
-
+/*
    Tensor A = Tensor :: ones ({2 , 2}) ;
    cout << "Tensor A creado" << endl ;
    Tensor B = Tensor :: zeros ({2 , 2}) ;
@@ -31,5 +31,36 @@ Tensor D = dot(A, B);
    cout << "Tensor D multiplicado" << endl ;
    Tensor E = matmul(A, B);
    cout << "Tensor E multiplicado" << endl ;
+*/
 
+
+////SOLAMENTE LA PRUEBA 1 FUNCIONA JAJSAJSAJSA
+
+//1. Crear un tensor de entrada de dimensiones 1000 × 20 × 20.
+   Tensor tensorEntrada = Tensor::random({100, 20, 20}, 0.0, 4.0);
+   cout << "Paso 1 Completo\n";
+//2. Transformarlo a 1000 × 400 usando view.
+   Tensor transformado = tensorEntrada.view({1000, 400});
+   cout << "Paso 2 Completo\n";
+//3. Multiplicarlo por una matriz 400 × 100.
+   Tensor const mat1 = Tensor::random({400, 100}, 0.0, 4.0);
+   Tensor multiplicado = matmul(transformado, mat1);
+   cout << "Paso 3 Completo\n";
+//4. Sumar una matriz 1 × 100.
+   Tensor sumado = multiplicado + Tensor::random({1, 100}, 0.0, 1.0);
+   cout << "Paso 4 Completo\n";
+//5. Aplicar la funci´on ReLU.
+   ReLU re_lu;
+   Tensor tensorReLu = sumado.apply(re_lu);
+   cout << "Paso 5 Completo\n";
+//6. Multiplicar por una matriz 100 × 10.
+   Tensor produto = tensorReLu * Tensor::random({100, 1}, 0.0, 4.0);
+   cout << "Paso 6 Completo\n";
+//7. Sumar una matriz 1 × 10.
+    produto = produto + Tensor::random({1, 10}, 0.0, 4.0);
+   cout << "Paso  7 Completo\n";
+//8. Aplicar la funci´on Sigmoid
+   Sigmoid sigmoid;
+   Tensor sigmoidTensor = produto.apply(sigmoid);
+   cout << "Paso 8 Completo\n";
 }
