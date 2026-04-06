@@ -18,7 +18,7 @@ class Tensor {
     double* matriz;
     vector <size_t> shape;
 public:
-
+    void print() const ;
     //size_t es un tipo de dato que se ua para tamaños o indices o posiciones de memoria
     //Solo toma valores positovs y cero.
     Tensor(double* data, const vector<size_t>& shape);

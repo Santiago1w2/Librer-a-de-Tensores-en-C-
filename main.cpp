@@ -37,8 +37,9 @@ Tensor D = dot(A, B);
 ////SOLAMENTE LA PRUEBA 1 FUNCIONA JAJSAJSAJSA
 
 //1. Crear un tensor de entrada de dimensiones 1000 × 20 × 20.
-   Tensor tensorEntrada = Tensor::random({100, 20, 20}, 0.0, 4.0);
+   Tensor tensorEntrada = Tensor::random({1000, 20, 20}, 0.0, 4.0);
    cout << "Paso 1 Completo\n";
+   //tensorEntrada.print();
 //2. Transformarlo a 1000 × 400 usando view.
    Tensor transformado = tensorEntrada.view({1000, 400});
    cout << "Paso 2 Completo\n";
@@ -52,15 +53,16 @@ Tensor D = dot(A, B);
 //5. Aplicar la funci´on ReLU.
    ReLU re_lu;
    Tensor tensorReLu = sumado.apply(re_lu);
-   cout << "Paso 5 Completo\n";
 //6. Multiplicar por una matriz 100 × 10.
-   Tensor produto = tensorReLu * Tensor::random({100, 1}, 0.0, 4.0);
+   Tensor produto = matmul(tensorReLu, Tensor::random({100, 10}, 0.0, 4.0));
    cout << "Paso 6 Completo\n";
 //7. Sumar una matriz 1 × 10.
     produto = produto + Tensor::random({1, 10}, 0.0, 4.0);
    cout << "Paso  7 Completo\n";
+   produto.print();
 //8. Aplicar la funci´on Sigmoid
    Sigmoid sigmoid;
    Tensor sigmoidTensor = produto.apply(sigmoid);
    cout << "Paso 8 Completo\n";
+   sigmoidTensor.print();
 }

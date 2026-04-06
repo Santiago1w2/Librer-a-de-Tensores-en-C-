@@ -186,43 +186,163 @@ Tensor Sigmoid::apply(const Tensor& t) const {
 
 //Sobrecarga de operadores
 Tensor Tensor::operator+(const Tensor& other) const {
-    // 1. Verificación estricta
-    if (this->shape != other.shape) {
-        throw std::invalid_argument("Error: Los tensores deben tener el mismo shape para sumarse.");
+
+    //Asegurar 3 dimensiones
+    vector<size_t> A = this->shape;
+    vector<size_t> B = other.shape;
+
+    while (A.size() < 3) A.insert(A.begin(), 1);
+    while (B.size() < 3) B.insert(B.begin(), 1);
+
+    //Shape resultado
+    vector<size_t> R(3);
+    for (int i = 0; i < 3; i++) {
+        if (A[i] == B[i] || A[i] == 1 || B[i] == 1) {
+            R[i] = max(A[i], B[i]);
+        } else {
+            throw std::invalid_argument("Shapes incompatibles suma");
+        }
     }
 
-    // 2. Crear el tensor resultado (usando el constructor de copia profunda)
-    Tensor resultado(*this);
+    //Crear vector de datos
+    size_t total = R[0] * R[1] * R[2];
+    vector<double> resultData(total);
 
-    // 3. Operar
-    size_t n = resultado.size();
-    for (size_t i = 0; i < n; i++) {
-        resultado[i] += other[i];
+    // Alias
+    size_t A1=A[0], A2=A[1], A3=A[2];
+    size_t B1=B[0], B2=B[1], B3=B[2];
+    size_t R1=R[0], R2=R[1], R3=R[2];
+
+    // 4. Loop
+    for (size_t i = 0; i < R1; i++) {
+        for (size_t j = 0; j < R2; j++) {
+            for (size_t k = 0; k < R3; k++) {
+
+                size_t iA = (A1 == 1) ? 0 : i;
+                size_t jA = (A2 == 1) ? 0 : j;
+                size_t kA = (A3 == 1) ? 0 : k;
+
+                size_t iB = (B1 == 1) ? 0 : i;
+                size_t jB = (B2 == 1) ? 0 : j;
+                size_t kB = (B3 == 1) ? 0 : k;
+
+                size_t idxA = iA*A2*A3 + jA*A3 + kA;
+                size_t idxB = iB*B2*B3 + jB*B3 + kB;
+                size_t idxR = i*R2*R3 + j*R3 + k;
+
+                resultData[idxR] = this->matriz[idxA] + other.matriz[idxB];
+            }
+        }
     }
 
-    // 4. Retornar por valor (esto activará el movimiento si está implementado)
-    return resultado;
+    //Construir tensor correctamente
+    return Tensor(R,resultData);
 }
 
 Tensor Tensor::operator-(const Tensor& other) const {
-    if (shape != other.shape) {
-        throw invalid_argument("El shape no es incompatible entre ambos tensores");
+
+    //Asegurar 3 dimensiones
+    vector<size_t> A = this->shape;
+    vector<size_t> B = other.shape;
+
+    while (A.size() < 3) A.insert(A.begin(), 1);
+    while (B.size() < 3) B.insert(B.begin(), 1);
+
+    //Shape resultado
+    vector<size_t> R(3);
+    for (int i = 0; i < 3; i++) {
+        if (A[i] == B[i] || A[i] == 1 || B[i] == 1) {
+            R[i] = max(A[i], B[i]);
+        } else {
+            throw std::invalid_argument("Shapes incompatibles resta");
+        }
     }
-    Tensor m = *this;
-    for (size_t i = 0; i < m.size(); i++) {
-        m[i] -= other[i];
+
+    //Crear vector de datos
+    size_t total = R[0] * R[1] * R[2];
+    vector<double> resultData(total);
+
+    // Alias
+    size_t A1=A[0], A2=A[1], A3=A[2];
+    size_t B1=B[0], B2=B[1], B3=B[2];
+    size_t R1=R[0], R2=R[1], R3=R[2];
+
+    for (size_t i = 0; i < R1; i++) {
+        for (size_t j = 0; j < R2; j++) {
+            for (size_t k = 0; k < R3; k++) {
+
+                size_t iA = (A1 == 1) ? 0 : i;
+                size_t jA = (A2 == 1) ? 0 : j;
+                size_t kA = (A3 == 1) ? 0 : k;
+
+                size_t iB = (B1 == 1) ? 0 : i;
+                size_t jB = (B2 == 1) ? 0 : j;
+                size_t kB = (B3 == 1) ? 0 : k;
+
+                size_t idxA = iA*A2*A3 + jA*A3 + kA;
+                size_t idxB = iB*B2*B3 + jB*B3 + kB;
+                size_t idxR = i*R2*R3 + j*R3 + k;
+
+                resultData[idxR] = this->matriz[idxA] - other.matriz[idxB];
+            }
+        }
     }
-    return m;
+
+    //Construir tensor correctamente
+    return Tensor(R,resultData);
 }
 Tensor Tensor::operator*(const Tensor& other) const {
-    if (shape != other.shape) {
-        throw invalid_argument("El shape es incompatible entre ambos tensores");
+
+    //Asegurar 3 dimensiones
+    vector<size_t> A = this->shape;
+    vector<size_t> B = other.shape;
+
+    while (A.size() < 3) A.insert(A.begin(), 1);
+    while (B.size() < 3) B.insert(B.begin(), 1);
+
+    //Shape resultado
+    vector<size_t> R(3);
+    for (int i = 0; i < 3; i++) {
+        if (A[i] == B[i] || A[i] == 1 || B[i] == 1) {
+            R[i] = max(A[i], B[i]);
+        } else {
+            throw std::invalid_argument("Shapes incompatibles multi");
+        }
     }
-    Tensor m = *this;
-    for (size_t i = 0; i < m.size(); i++) {
-        m[i] *= other[i];
+
+    //Crear vector de datos
+    size_t total = R[0] * R[1] * R[2];
+    vector<double> resultData(total);
+
+    // Alias
+    size_t A1=A[0], A2=A[1], A3=A[2];
+    size_t B1=B[0], B2=B[1], B3=B[2];
+    size_t R1=R[0], R2=R[1], R3=R[2];
+
+    // 4. Loop
+    for (size_t i = 0; i < R1; i++) {
+        for (size_t j = 0; j < R2; j++) {
+            for (size_t k = 0; k < R3; k++) {
+
+                size_t iA = (A1 == 1) ? 0 : i;
+                size_t jA = (A2 == 1) ? 0 : j;
+                size_t kA = (A3 == 1) ? 0 : k;
+
+                size_t iB = (B1 == 1) ? 0 : i;
+                size_t jB = (B2 == 1) ? 0 : j;
+                size_t kB = (B3 == 1) ? 0 : k;
+
+                size_t idxA = iA*A2*A3 + jA*A3 + kA;
+                size_t idxB = iB*B2*B3 + jB*B3 + kB;
+                size_t idxR = i*R2*R3 + j*R3 + k;
+
+                resultData[idxR] = this->matriz[idxA] * other.matriz[idxB];
+            }
+        }
     }
-    return m;
+
+    //Construir tensor correctamente
+    return Tensor(R,resultData);
 }
 Tensor Tensor::operator*(double num) const{
     Tensor m = *this;
@@ -234,17 +354,23 @@ Tensor Tensor::operator*(double num) const{
 
 
 Tensor Tensor::view(const vector<size_t>& new_shape) const {
-    if (shape.size() > 3)
-        throw invalid_argument("El tamaño maximo de dimnesiones tiene que ser 3");
+    // Validar máximo 3 dimensiones según el PDF [cite: 108]
+    if (new_shape.size() > 3)
+        throw invalid_argument("Máximo 3 dimensiones");
 
-    size_t total_values = 1;
-    for (size_t m : new_shape) {
-        total_values *= m;
-    }
-    if (size() != total_values) {
-        throw invalid_argument("El shape es incompatible entre ambos tensores");
-    }
-    Tensor result(matriz, new_shape);
+    size_t total = 1;
+    for (auto d : new_shape) total *= d;
+
+    // El número total de elementos debe mantenerse constante [cite: 100]
+    if (total != this->size())
+        throw invalid_argument("Shape incompatible para view");
+
+    // Crear una copia que comparta el puntero (o usar el constructor de movimiento)
+    Tensor result = *this;
+    result.shape = new_shape; // Actualiza a 1D, 2D o 3D según se pida
+
+    // IMPORTANTE: El PDF dice que no se deben copiar los datos [cite: 106]
+    // Asegúrate de que tu destructor no borre la memoria dos veces si usas punteros.
 
     return result;
 }
@@ -335,32 +461,42 @@ Tensor dot ( const Tensor & a , const Tensor & b ) {
     return Tensor({1}, {suma});
 }
 
-Tensor matmul ( const Tensor & a , const Tensor & b ) {
-    // 1. Validar que sean bidimensionales
-    if (a.shape.size() != 2 || b.shape.size() != 2) {
-        throw std::invalid_argument("Matmul: Ambos tensores deben ser 2D.");
+Tensor matmul(const Tensor& a, const Tensor& b) {
+    // Extraer solo las dimensiones significativas (las que no son 1)
+    vector<size_t> A, B;
+    for (size_t s : a.shape)
+        if (s > 1)
+            A.push_back(s);
+    for (size_t s : b.shape)
+        if (s > 1)
+            B.push_back(s);
+
+    // 2. Si es un vector (1D), convertirlo lógicamente a 2D para la multiplicación
+    if (A.size() == 1) A.insert(A.begin(), 1);
+    if (B.size() == 1) B.push_back(1);
+
+    // 3. Validar compatibilidad matricial [cite: 157]
+    if (A.size() != 2 || B.size() != 2) {
+        throw std::invalid_argument("Matmul: Se requieren estructuras compatibles con 2D.");
     }
-    // 2. Validar compatibilidad (Columnas de A == Filas de B)
-    size_t m = a.shape[0];
-    size_t n = a.shape[1];
-    size_t p = b.shape[1];
-    if (n != b.shape[0]) {
-        throw std::invalid_argument("Matmul: Dimensiones incompatibles para multiplicacion.");
+
+    size_t M = A[0]; // Filas A
+    size_t K = A[1]; // Columnas A
+    size_t N = B[1]; // Columnas B
+
+    if (K != B[0]) { // Columnas A deben ser igual a Filas B
+        throw std::invalid_argument("Matmul: Dimensiones incompatibles (K != filas de B).");
     }
-    // 3. Crear tensor resultado (inicializado en ceros)
-    Tensor res = Tensor::zeros({m, p});
-    // 4. Multiplicación (Algoritmo i, j, k)
-    for (size_t i = 0; i < m; ++i) {
-        for (size_t j = 0; j < p; ++j) {
-            double temp = 0.0;
-            for (size_t k = 0; k < n; ++k) {
-                // Acceso manual al índice: fila * total_columnas + columna
-                temp += a.matriz[i * n + k] * b.matriz[k * p + j];
+
+    Tensor res = Tensor::zeros({M, N});
+    // Multiplicación
+    for (size_t i = 0; i < M; ++i) {
+        for (size_t k = 0; k < K; ++k) {
+            for (size_t j = 0; j < N; ++j) {
+                res.matriz[i * N + j] += a.matriz[i * K + k] * b.matriz[k * N + j];
             }
-            res.matriz[i * p + j] = temp;
         }
     }
-    // 5. Devolver por valor (C++ activará el Constructor de Movimiento automáticamente)
     return res;
 }
 
@@ -430,3 +566,52 @@ void Tensor::display() {
 }
 
 */
+
+void Tensor::print() const {
+    if (this->shape.empty()) {
+        std::cout << "Tensor vacío" << std::endl;
+        return;
+    }
+
+    // Caso 1D: [Dim0]
+    if (this->shape.size() == 1) {
+        std::cout << "[";
+        for (size_t i = 0; i < shape[0]; ++i) {
+            std::cout << matriz[i] << (i == shape[0] - 1 ? "" : ", ");
+        }
+        std::cout << "]" << std::endl;
+    }
+    // Caso 2D: [Filas, Columnas]
+    else if (this->shape.size() == 2) {
+        size_t rows = shape[0];
+        size_t cols = shape[1];
+        for (size_t i = 0; i < rows; ++i) {
+            std::cout << (i == 0 ? "[[" : " [");
+            for (size_t j = 0; j < cols; ++j) {
+                std::cout << matriz[i * cols + j] << (j == cols - 1 ? "" : ", ");
+            }
+            std::cout << (i == rows - 1 ? "]]" : "]\n");
+        }
+        std::cout << std::endl;
+    }
+    // Caso 3D: [Capas, Filas, Columnas]
+    else if (this->shape.size() == 3) {
+        size_t layers = shape[0];
+        size_t rows = shape[1];
+        size_t cols = shape[2];
+
+        for (size_t l = 0; l < layers; ++l) {
+            std::cout << "Capa " << l << ":" << std::endl;
+            for (size_t i = 0; i < rows; ++i) {
+                std::cout << (i == 0 ? " [[" : "  [");
+                for (size_t j = 0; j < cols; ++j) {
+                    // Índice: (capa * filas * columnas) + (fila * columnas) + columna
+                    size_t idx = (l * rows * cols) + (i * cols) + j;
+                    std::cout << matriz[idx] << (j == cols - 1 ? "" : ", ");
+                }
+                std::cout << (i == rows - 1 ? "]]" : "]\n");
+            }
+            std::cout << "\n" << std::endl;
+        }
+    }
+}
