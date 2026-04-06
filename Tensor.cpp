@@ -4,8 +4,10 @@
 
 #include "Tensor.h"
 using namespace std;
+//constructor general para destructor
 Tensor::Tensor(double* data, const vector<size_t>& shape)
     : matriz(data), shape(shape), eliminar(false) {}
+
 Tensor::Tensor(const vector<size_t>& shape, const vector<double>& values) {
     if (shape.size() > 3)
         throw invalid_argument("El tamaño maximo de dimnesiones tiene que ser 3");
@@ -54,7 +56,7 @@ Tensor::Tensor(const Tensor& other) {
         total_size *= dim;
     }
 
-    // 3. RESERVAR NUEVA MEMORIA (Esto evita el crash)
+    // Se reserva nueva memoria
     this->matriz = new double[total_size];
 
     // 4. Copiar los valores uno a uno
@@ -158,20 +160,18 @@ Tensor Tensor::apply(const TensorTransform& transform) const {
 
 //Clase heradada ReLU
 Tensor ReLU::apply(const Tensor& t) const {
-    // 1. Creamos la copia que vamos a modificar
+    // Se crea la copia se va a modificar
     Tensor res = t;
 
-    // 2. Usamos size_t para que coincida con el retorno de res.size()
+    // Se usa size_t para que coincida con el retorno de res.size()
     size_t n = res.size();
 
     for (size_t i = 0; i < n; i++) {
-        // 3. Usamos std::max explícitamente
-        // Nota: Asegúrate de que res[i] devuelva una referencia (double&)
-        res[i] = std::max(0.0, res[i]);
+        res[i] = max(0.0, res[i]);
     }
     cout << "Relu aplicado exitosamente\n";
 
-    return res; // El compilador aplicará RVO (Return Value Optimization)
+    return res;
 }
 
 //Clase heradada Sigmoid
@@ -208,12 +208,10 @@ Tensor Tensor::operator+(const Tensor& other) const {
     size_t total = R[0] * R[1] * R[2];
     vector<double> resultData(total);
 
-    // Alias
     size_t A1=A[0], A2=A[1], A3=A[2];
     size_t B1=B[0], B2=B[1], B3=B[2];
     size_t R1=R[0], R2=R[1], R3=R[2];
 
-    // 4. Loop
     for (size_t i = 0; i < R1; i++) {
         for (size_t j = 0; j < R2; j++) {
             for (size_t k = 0; k < R3; k++) {
@@ -262,7 +260,6 @@ Tensor Tensor::operator-(const Tensor& other) const {
     size_t total = R[0] * R[1] * R[2];
     vector<double> resultData(total);
 
-    // Alias
     size_t A1=A[0], A2=A[1], A3=A[2];
     size_t B1=B[0], B2=B[1], B3=B[2];
     size_t R1=R[0], R2=R[1], R3=R[2];
@@ -314,12 +311,10 @@ Tensor Tensor::operator*(const Tensor& other) const {
     size_t total = R[0] * R[1] * R[2];
     vector<double> resultData(total);
 
-    // Alias
     size_t A1=A[0], A2=A[1], A3=A[2];
     size_t B1=B[0], B2=B[1], B3=B[2];
     size_t R1=R[0], R2=R[1], R3=R[2];
 
-    // 4. Loop
     for (size_t i = 0; i < R1; i++) {
         for (size_t j = 0; j < R2; j++) {
             for (size_t k = 0; k < R3; k++) {
@@ -354,23 +349,20 @@ Tensor Tensor::operator*(double num) const{
 
 
 Tensor Tensor::view(const vector<size_t>& new_shape) const {
-    // Validar máximo 3 dimensiones según el PDF [cite: 108]
+    // Validar máximo 3 dimensiones
     if (new_shape.size() > 3)
         throw invalid_argument("Máximo 3 dimensiones");
 
     size_t total = 1;
     for (auto d : new_shape) total *= d;
 
-    // El número total de elementos debe mantenerse constante [cite: 100]
+    // El número total de elementos debe mantenerse constante
     if (total != this->size())
         throw invalid_argument("Shape incompatible para view");
 
     // Crear una copia que comparta el puntero (o usar el constructor de movimiento)
     Tensor result = *this;
     result.shape = new_shape; // Actualiza a 1D, 2D o 3D según se pida
-
-    // IMPORTANTE: El PDF dice que no se deben copiar los datos [cite: 106]
-    // Asegúrate de que tu destructor no borre la memoria dos veces si usas punteros.
 
     return result;
 }
@@ -445,7 +437,7 @@ Tensor Tensor::concat(const std::vector<Tensor>& tensors, int axis) {
 
 
 
-//FUNCIONES AMIGAS
+//Funciones Amigas
 
 Tensor dot ( const Tensor & a , const Tensor & b ) {
     if (a.shape != b.shape) {
@@ -471,13 +463,13 @@ Tensor matmul(const Tensor& a, const Tensor& b) {
         if (s > 1)
             B.push_back(s);
 
-    // 2. Si es un vector (1D), convertirlo lógicamente a 2D para la multiplicación
+    // Si es un vector de 1 dimención, convertirlo lógicamente a 2D para la multiplicación
     if (A.size() == 1) A.insert(A.begin(), 1);
     if (B.size() == 1) B.push_back(1);
 
-    // 3. Validar compatibilidad matricial [cite: 157]
+    // Validar compatibilidad matricial
     if (A.size() != 2 || B.size() != 2) {
-        throw std::invalid_argument("Matmul: Se requieren estructuras compatibles con 2D.");
+        throw invalid_argument("Se requieren dimensiones compatibles con 2D en el matmul.");
     }
 
     size_t M = A[0]; // Filas A
@@ -485,7 +477,7 @@ Tensor matmul(const Tensor& a, const Tensor& b) {
     size_t N = B[1]; // Columnas B
 
     if (K != B[0]) { // Columnas A deben ser igual a Filas B
-        throw std::invalid_argument("Matmul: Dimensiones incompatibles (K != filas de B).");
+        throw invalid_argument("Matmul: Dimensiones incompatibles (K != filas de B).");
     }
 
     Tensor res = Tensor::zeros({M, N});
@@ -500,118 +492,67 @@ Tensor matmul(const Tensor& a, const Tensor& b) {
     return res;
 }
 
-
-
-/*
-//Metodo display para mostrar matrices y probarlas
-//NO FUNCIONA - SE LOQUEA CON LA MEMORIA JAJA
-
-void Tensor::display() {
-    if (matriz == nullptr) {
-        std::cout << "Tensor vacío" << std::endl;
-        return;
-    }
-
-    size_t total_elements = size();
-    int dims = shape.size();
-
-    std::cout << "Tensor (shape: [";
-    for (size_t i = 0; i < shape.size(); ++i) {
-        std::cout << shape[i] << (i == shape.size() - 1 ? "" : ", ");
-    }
-    std::cout << "])" << std::endl;
-
-    // Caso especial: Escalar o vector de 1D
-    if (dims == 1) {
-        std::cout << "[";
-        for (size_t i = 0; i < shape[0]; ++i) {
-            std::cout << matriz[i] << (i == shape[0] - 1 ? "" : ", ");
-        }
-        std::cout << "]" << std::endl;
-        return;
-    }
-
-    // Para 2D o más, calculamos pasos (strides) para navegar el arreglo plano
-    for (size_t i = 0; i < total_elements; ++i) {
-        // Lógica de apertura de corchetes
-        size_t temp_idx = i;
-        size_t stride = total_elements;
-        for (int d = 0; d < dims; ++d) {
-            stride /= shape[d];
-            if (temp_idx % stride == 0) {
-                std::cout << "[";
-            }
-        }
-
-        // Imprimir el valor con formato
-        std::cout << std::setw(8) << matriz[i];
-
-        // Lógica de cierre de corchetes y comas
-        temp_idx = i + 1;
-        stride = 1;
-        bool closed = false;
-        for (int d = dims - 1; d >= 0; --d) {
-            if (temp_idx % (stride * shape[d]) == 0) {
-                std::cout << "]";
-                stride *= shape[d];
-                closed = true;
-            } else {
-                if (closed) std::cout << "\n";
-                else if (i < total_elements - 1) std::cout << ", ";
-                break;
-            }
-        }
-    }
-    std::cout << std::endl;
-}
-
-*/
-
 void Tensor::print() const {
+    //Verificar si las dimensiones estan vacias
     if (this->shape.empty()) {
-        std::cout << "Tensor vacío" << std::endl;
+        cout << "Tensor vacío" << endl;
         return;
     }
 
     // Caso 1D: [Dim0]
     if (this->shape.size() == 1) {
-        std::cout << "[";
+        cout << "[";
         for (size_t i = 0; i < shape[0]; ++i) {
-            std::cout << matriz[i] << (i == shape[0] - 1 ? "" : ", ");
+            cout << matriz[i] << (i == shape[0] - 1 ? "" : ", ");
         }
-        std::cout << "]" << std::endl;
+        cout << "]" <<endl;
     }
     // Caso 2D: [Filas, Columnas]
     else if (this->shape.size() == 2) {
-        size_t rows = shape[0];
+        size_t fil = shape[0];
         size_t cols = shape[1];
-        for (size_t i = 0; i < rows; ++i) {
-            std::cout << (i == 0 ? "[[" : " [");
+        for (size_t i = 0; i < fil; ++i) {
+            if (i == 0)
+                cout<<"[[";
+            else
+                cout<<" [";
             for (size_t j = 0; j < cols; ++j) {
-                std::cout << matriz[i * cols + j] << (j == cols - 1 ? "" : ", ");
+                cout << matriz[i * cols + j] << (j == cols - 1 ? "" : ", ");
             }
-            std::cout << (i == rows - 1 ? "]]" : "]\n");
+            if (i == fil-1)
+                cout<<"]]";
+            else
+                cout<<"]\n";
         }
-        std::cout << std::endl;
+        cout << endl;
     }
     // Caso 3D: [Capas, Filas, Columnas]
     else if (this->shape.size() == 3) {
-        size_t layers = shape[0];
-        size_t rows = shape[1];
+        size_t capa = shape[0];
+        size_t fil = shape[1];
         size_t cols = shape[2];
 
-        for (size_t l = 0; l < layers; ++l) {
-            std::cout << "Capa " << l << ":" << std::endl;
-            for (size_t i = 0; i < rows; ++i) {
-                std::cout << (i == 0 ? " [[" : "  [");
+        for (size_t l = 0; l < capa; ++l) {
+            cout << "Capa " << l << ":" << endl;
+            for (size_t i = 0; i < fil; ++i) {
+                if (i == 0)
+                    cout <<" [[";
+                else
+                    cout<<"  [";
                 for (size_t j = 0; j < cols; ++j) {
-                    // Índice: (capa * filas * columnas) + (fila * columnas) + columna
-                    size_t idx = (l * rows * cols) + (i * cols) + j;
-                    std::cout << matriz[idx] << (j == cols - 1 ? "" : ", ");
+                    // El indice se calcula como: (capa * filas * columnas) + (fila * columnas) + columna
+                    size_t idx = (l * fil * cols) + (i * cols) + j;
+                    if (j == cols - 1)
+                        cout << matriz[idx]<<"";
+                    else
+                        cout << matriz[idx]<<" ";
                 }
-                std::cout << (i == rows - 1 ? "]]" : "]\n");
+                if (i == fil - 1)
+                    cout<<"]]";
+                else
+                    cout<<"]\n";
             }
-            std::cout << "\n" << std::endl;
+            cout << "\n" <<endl;
         }
     }
 }

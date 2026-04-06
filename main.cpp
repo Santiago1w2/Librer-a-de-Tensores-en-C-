@@ -34,8 +34,6 @@ Tensor D = dot(A, B);
 */
 
 
-////SOLAMENTE LA PRUEBA 1 FUNCIONA JAJSAJSAJSA
-
 //1. Crear un tensor de entrada de dimensiones 1000 × 20 × 20.
    Tensor tensorEntrada = Tensor::random({1000, 20, 20}, 0.0, 4.0);
    cout << "Paso 1 Completo\n";
@@ -59,7 +57,6 @@ Tensor D = dot(A, B);
 //7. Sumar una matriz 1 × 10.
     produto = produto + Tensor::random({1, 10}, 0.0, 4.0);
    cout << "Paso  7 Completo\n";
-   produto.print();
 //8. Aplicar la funci´on Sigmoid
    Sigmoid sigmoid;
    Tensor sigmoidTensor = produto.apply(sigmoid);
