@@ -18,13 +18,12 @@ class Tensor {
     double* matriz;
     vector <size_t> shape;
 public:
-    void print() const ;
+
     //size_t es un tipo de dato que se ua para tamaños o indices o posiciones de memoria
     //Solo toma valores positovs y cero.
     Tensor(double* data, const vector<size_t>& shape);
     Tensor(const vector<size_t>& shape, const vector<double>& values);
     //constructor de copia
-    //
     static Tensor zeros(const vector<size_t>& shape);
     static Tensor ones(const vector<size_t>& shape);
     static Tensor random(const vector<size_t>& shape, const double& min,const double& max);
@@ -49,17 +48,18 @@ public:
     Tensor operator*(const Tensor& other) const;
     Tensor operator*(double scalar) const;
 
+    //Funcion view
     Tensor view(const vector<size_t>& new_shape) const;
 
-    //void display(); NO FUNCIONA
-
-    //concatenacion
-
+    //Concatenacion
     static Tensor concat(const std::vector<Tensor>& tensors, int axis);
 
     //Funciones Amigas
     friend Tensor dot ( const Tensor & a , const Tensor & b ) ;
     friend Tensor matmul ( const Tensor & a , const Tensor & b );
+
+    //Funcion para imprimir las matrices
+    void print() const ;
 };
 
 //Clase abstracta
