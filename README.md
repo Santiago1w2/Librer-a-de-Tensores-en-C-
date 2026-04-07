@@ -86,6 +86,6 @@ El proyecto se estructura de la siguiente forma:
 * `Tensor Sigmoid::apply(const Tensor& t) const`: Implementación que aplica la fórmula matemática $`\sigma(x) = \frac{1}{1 + e^{-x}}`$ sobre cada elemento del tensor utilizando la función exponencial de la librería estándar, retornando un nuevo tensor transformado.
 ----
 ## Créditos
-* Código hecho por Santiago Morales y Gabriel Díaz para el curso de Programación III, UTEC.
+* Código hecho por Santiago Césat Morales Portella y Gabriel Marcelo Díaz Carrión para el curso de Programación III, UTEC.
 * Parte de la descripción se hizo con el apoyo de herramientas de IA generativas, revisadas cuidadosamente por los autores.
 
