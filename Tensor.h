@@ -1,11 +1,11 @@
 //
-// Created by smora on 3/04/2026.
+// Hecho por Santiago Morales y Gabriel Díaz
 //
 #include <iostream>
 #include <iomanip>
 #include <vector>
-#include <algorithm>
-#include <cmath>
+#include <cmath> //cmath si se utiliza  (por la funcion exp) pero aparece como no utilizada
+
 using namespace std;
 
 
@@ -19,8 +19,8 @@ class Tensor {
     vector <size_t> shape;
 public:
 
-    //size_t es un tipo de dato que se ua para tamaños o indices o posiciones de memoria
-    //Solo toma valores positovs y cero.
+    //size_t es un tipo de dato que se usa para tamaños o indices o posiciones de memoria
+    //Solo toma valores positvos y cero.
     Tensor(double* data, const vector<size_t>& shape);
     Tensor(const vector<size_t>& shape, const vector<double>& values);
     //constructor de copia
@@ -32,7 +32,7 @@ public:
     double& operator[](size_t i);
     const double& operator[](size_t i) const;
 
-    // Prototipos requeridos en la clase Tensor
+    // Constructores y Destructores requeridos en la clase Tensor
     Tensor(const Tensor& other);
     Tensor& operator=(const Tensor& other);
     Tensor(Tensor&& other) noexcept;

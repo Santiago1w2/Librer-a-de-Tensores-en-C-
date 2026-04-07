@@ -1,7 +1,12 @@
+//
+// Hecho por Santiago Morales y Gabriel Díaz
+//
+
 #include <iostream>
 #include "Tensor.h"
 using namespace std;
 int main() {
+//PRUEBA 1
    /* Tensor A = Tensor::arange(-5, 5).view({2, 5});
    //A.display();
    ReLU relu;
@@ -18,6 +23,7 @@ int main() {
 
    */
 
+//Prueba 2
 /*
    Tensor A = Tensor :: ones ({2 , 2}) ;
    cout << "Tensor A creado" << endl ;
@@ -33,7 +39,7 @@ Tensor D = dot(A, B);
    cout << "Tensor E multiplicado" << endl ;
 */
 
-
+//PRUEBA 3
 //1. Crear un tensor de entrada de dimensiones 1000 × 20 × 20.
    Tensor tensorEntrada = Tensor::random({1000, 20, 20}, 0.0, 4.0);
    cout << "Paso 1 Completo\n";
